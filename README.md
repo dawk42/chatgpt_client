@@ -14,3 +14,10 @@ This is my efforts to make a chat client for the OpenAI api
     Add different models
     Add option for settings file
     Add ability to save and view conversations 
+
+## Chat Tab
+
+![Chat Tab](images/chat.png)
+
+## Settings Tab
+![Settings Tab](images/settings.png)
