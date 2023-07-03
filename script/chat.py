@@ -21,18 +21,13 @@ import tkinter as tk
 from tkinter import ttk
 import openai
 from typing import List
+global akey
 global mtvar
 global tempvar
 mtvar=384
+akey="null"
 tempvar=.7
 model_id = "gpt-3.5-turbo"
-
-#openai.api_key = os.getenv("OPENAI_API_KEY")
-global akey
-akey = "null"
-
-def update_api_status():
-    status_label_api.config(text="API: Ready ")
 
 def update_mt_status():
     global mtvar
@@ -58,18 +53,13 @@ def show_api_key_prompt():
         api_key = api_key_entry.get()
         get_api_key(api_key)
         update_key()
-        update_api_status()
+        update_api_status("API Status: Ready")
         api_key_prompt_window.destroy()
 
     submit_button = tk.Button(api_key_prompt_window, text="Submit", command=submit_api_key)
     submit_button.pack(side=tk.LEFT, pady=5, padx=5)
 
-def get_api_key(api_key):
-    print("API Key stored")
-    openai.api_key=api_key
-    global akey
-    akey = openai.api_key
-    # You can perform further operations with the API key here
+
 
 def on_button_click():
     user_input = input_text.get("1.0", tk.END).strip()  # Retrieve the user input from the Text widget
@@ -86,12 +76,13 @@ def on_button_click():
         )
         
         ai_response = response.choices[0].message.content
-        display_text.insert(tk.END, "User: " + user_input + "\n")  # Display the user input in the Text widget
-        display_text.insert(tk.END, "AI: " + ai_response + "\n")  # Display the AI response in the Text widget
+        display_text.insert(tk.END, "User: " + user_input + "\n")
+        display_text.insert(tk.END, "AI: " + ai_response + "\n") 
+        display_text.insert(tk.END, "====================" +"\n")
         conversation.append({"role": "assistant", "content": ai_response})
         time.sleep(1)
         input_text.delete("1.0", tk.END)  # Clear the user input Text widget
-
+        scroll_to_bottom()
 # Create the main window
 
 window = tk.Tk()
@@ -116,8 +107,11 @@ button.pack(side=tk.TOP, padx=5)
 display_frame = ttk.Frame(tab1)
 display_frame.pack(side=tk.LEFT, anchor="ne", pady=5, padx=5)
 
-scrollbar = ttk.Scrollbar(display_frame)
-scrollbar.pack(side=tk.RIGHT, fill="y")
+def scroll_to_bottom():
+    display_text.yview_moveto(1.0)
+
+scrollbar = tk.Scrollbar(display_frame)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
 display_text = tk.Text(display_frame, height=50, width=80, yscrollcommand=scrollbar.set)
 scrollbar.config(command=display_text.yview)
@@ -159,9 +153,7 @@ tokslid.pack(side=tk.LEFT, padx=20, pady=5)
 #Current API key
 def update_key():
     global ak_text
-    # Clear the Text widget
     ak_text.delete("1.0", tk.END)
-    # Insert the updated text
     ak_text.insert(tk.END, akey)
 
 ak_frame = ttk.Frame(tab2)
@@ -174,9 +166,6 @@ ak_text.pack(side=tk.LEFT, padx=20, pady=5)
 open_prompt_button = tk.Button(ak_frame, text="Change API Key", command=show_api_key_prompt)
 open_prompt_button.pack(side=tk.LEFT, padx=5)
 
-#Statusbar functions
-
-
 #Statusbar Sections
 status_frame = tk.Frame(window, bd=1, relief=tk.SUNKEN)
 status_frame.pack(side=tk.BOTTOM, fill=tk.X)
@@ -187,16 +176,34 @@ status_label_mtv = tk.Label(status_frame, text=mtvar, bd=0, relief=tk.SUNKEN, an
 status_label_tvl = tk.Label(status_frame, text="Temperature: ", bd=0, relief=tk.SUNKEN, anchor=tk.W)
 status_label_tvv = tk.Label(status_frame, text=tempvar, bd=0, relief=tk.SUNKEN, anchor=tk.W)
 
-if akey == None:
-    akey = "Null"
-else:
-    update_api_status()
-
 status_label_api.pack(side=tk.LEFT, padx=4, pady=2, fill=tk.X)
 status_label_mtl.pack(side=tk.LEFT, padx=2, pady=2, fill=tk.X)
 status_label_mtv.pack(side=tk.LEFT, padx=4, pady=2, fill=tk.X)
 status_label_tvl.pack(side=tk.LEFT, padx=2, pady=2, fill=tk.X)
 status_label_tvv.pack(side=tk.LEFT, padx=4, pady=2, fill=tk.X)
+
+#Statusbar functions
+def get_api_key(api_key):
+    print("API Key stored")
+    openai.api_key=api_key
+    global akey
+    akey = openai.api_key
+    # You can perform further operations with the API key here
+
+def update_api_status(vartext):
+    status_label_api.config(text=vartext)
+
+def check_env_var(key_var):
+    api_key = os.getenv(key_var)
+    if api_key is not None:
+        get_api_key(api_key)
+        update_key()
+        update_api_status("API Status: Ready")
+    else:
+        get_api_key("null")
+        update_api_status("API Status: No Key")
+        
+check_env_var("OPENAI_API_KEY")
 
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
