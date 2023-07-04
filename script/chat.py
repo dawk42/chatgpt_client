@@ -153,8 +153,15 @@ tokslid.pack(side=tk.LEFT, padx=20, pady=5)
 #Current API key
 def update_key():
     global ak_text
+    first = akey[0:6]
+    b = len(akey)
+    a = b - 6
+    c = a - 6
+    fill = '*' * c
+    last = akey[a:b]
+    obkey = first+fill+last
     ak_text.delete("1.0", tk.END)
-    ak_text.insert(tk.END, akey)
+    ak_text.insert(tk.END, obkey)
 
 ak_frame = ttk.Frame(tab2)
 ak_label = ttk.Label(ak_frame, text="API Key")
