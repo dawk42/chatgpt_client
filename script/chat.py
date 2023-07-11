@@ -38,9 +38,6 @@ def update_t_status():
     status_label_tvv.config(text=tempvar)
 
 # Create conversation list with initial system prompt
-conversation_prompt = "You are a brilliant assistant who is an expert in cybersecurity."
-conversation = [{"role": "system", "content": conversation_prompt}]
-
 def show_api_key_prompt():
     api_key_prompt_window = tk.Toplevel(window)
     api_key_prompt_window.title("API Key Prompt")
@@ -59,9 +56,10 @@ def show_api_key_prompt():
     submit_button = tk.Button(api_key_prompt_window, text="Submit", command=submit_api_key)
     submit_button.pack(side=tk.LEFT, pady=5, padx=5)
 
+conversation_prompt = "You are a brilliant assistant who is an expert in cybersecurity."
+conversation = [{"role": "system", "content": conversation_prompt}]
 
-
-def on_button_click():
+def on_button_click(): 
     user_input = input_text.get("1.0", tk.END).strip()  # Retrieve the user input from the Text widget
     if user_input != "":
         conversation.append({"role": "user", "content": user_input})
@@ -189,12 +187,71 @@ status_label_mtv.pack(side=tk.LEFT, padx=4, pady=2, fill=tk.X)
 status_label_tvl.pack(side=tk.LEFT, padx=2, pady=2, fill=tk.X)
 status_label_tvv.pack(side=tk.LEFT, padx=4, pady=2, fill=tk.X)
 
+# Model select
+def model_select(event):
+    global model_id
+    selected_option = model_dd.get()
+    if selected_option == "ChatGPT 3.5 Turbo":
+        model_id = "gpt-3.5-turbo"    
+    elif selected_option == "ChatGPT 4.0":
+        model_id = "gpt-4-0613"
+
+model_dd_frame = ttk.Frame(tab2)
+model_dd_label = ttk.Label(model_dd_frame, text="Select Model")
+model_dd_label.pack(side=tk.LEFT)
+variable = tk.StringVar(model_dd_frame)
+model_dd = ttk.Combobox(model_dd_frame, textvariable=model_id)
+model_dd['values'] = ("ChatGPT 3.5 Turbo", "ChatGPT 4.0")
+model_dd.bind("<<ComboboxSelected>>", model_select)
+model_dd.pack(side=tk.LEFT)
+
+#Pre-Defined conversation Prompts
+def cp_select(event):
+    global conversation_prompt
+    global conversation
+    selected_option = prompt_dd.get()
+    if selected_option == "Cybersecurity":
+        conversation_prompt = "You are a brilliant assistant who is an expert in cybersecurity."
+        conversation = [{"role": "system", "content": conversation_prompt}]
+    elif selected_option == "Author":
+        conversation_prompt = "You are creative author, with a flare for world creation"
+        conversation = [{"role": "system", "content": conversation_prompt}]
+    elif selected_option == "Communicator":
+        conversation_prompt = "Translate into a brief corporate communication"
+        conversation = [{"role": "system", "content": conversation_prompt}]
+
+cp_dd_frame = ttk.Frame(tab2)
+cp_dd_label = ttk.Label(cp_dd_frame, text="Select Mode")
+cp_dd_label.pack(side=tk.LEFT)
+variable = tk.StringVar(cp_dd_frame)
+prompt_dd = ttk.Combobox(cp_dd_frame, textvariable=conversation_prompt)
+prompt_dd['values'] = ("Cybersecurity", "Author", "Communicator")
+prompt_dd.bind("<<ComboboxSelected>>", cp_select)
+prompt_dd.pack(side=tk.LEFT)
+
+#User input converstion prompt
+def cp_submit():
+    global conversation
+    cp_input = cp_ui_text.get("1.0", tk.END).strip()
+    conversation = [{"role": "system", "content": cp_input}]
+
+cp_ui_frame = ttk.Frame(tab2)
+cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
+cp_ui_label.pack(side=tk.LEFT, padx=5, pady=0)
+cp_ui_text = tk.Text(cp_ui_frame, height=1, width=60)
+cp_ui_text.pack(side=tk.LEFT, padx=5, pady=0)
+cp_ui_button = tk.Button(cp_ui_frame, text="Set Mode", command=cp_submit)
+cp_ui_button.pack(side=tk.LEFT, padx=5, pady=0)
+
+
+
 #Statusbar functions
 def get_api_key(api_key):
+    global akey
     print("API Key stored")
     openai.api_key=api_key
-    global akey
     akey = openai.api_key
+    
     # You can perform further operations with the API key here
 
 def update_api_status(vartext):
@@ -212,9 +269,13 @@ def check_env_var(key_var):
         
 check_env_var("OPENAI_API_KEY")
 
+ak_frame.pack(anchor="nw")
+model_dd_frame.pack(anchor="nw")
+cp_dd_frame.pack(anchor="nw")
+cp_ui_frame.pack(anchor="nw")
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
-ak_frame.pack(anchor="nw")
+
 notebook.pack()
 # Start the GUI event loop
 window.mainloop()
