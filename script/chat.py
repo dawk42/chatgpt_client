@@ -203,7 +203,7 @@ variable = tk.StringVar(model_dd_frame)
 model_dd = ttk.Combobox(model_dd_frame, textvariable=model_id)
 model_dd['values'] = ("ChatGPT 3.5 Turbo", "ChatGPT 4.0")
 model_dd.bind("<<ComboboxSelected>>", model_select)
-model_dd.pack(side=tk.LEFT)
+model_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
 #Pre-Defined conversation Prompts
 def cp_select(event):
@@ -221,13 +221,13 @@ def cp_select(event):
         conversation = [{"role": "system", "content": conversation_prompt}]
 
 cp_dd_frame = ttk.Frame(tab2)
-cp_dd_label = ttk.Label(cp_dd_frame, text="Select Mode")
+cp_dd_label = ttk.Label(cp_dd_frame, text="Select  Mode")
 cp_dd_label.pack(side=tk.LEFT)
 variable = tk.StringVar(cp_dd_frame)
 prompt_dd = ttk.Combobox(cp_dd_frame, textvariable=conversation_prompt)
 prompt_dd['values'] = ("Cybersecurity", "Author", "Communicator")
 prompt_dd.bind("<<ComboboxSelected>>", cp_select)
-prompt_dd.pack(side=tk.LEFT)
+prompt_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
 #User input converstion prompt
 def cp_submit():
@@ -237,11 +237,11 @@ def cp_submit():
 
 cp_ui_frame = ttk.Frame(tab2)
 cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
-cp_ui_label.pack(side=tk.LEFT, padx=5, pady=0)
+cp_ui_label.pack(side=tk.LEFT, pady=10)
 cp_ui_text = tk.Text(cp_ui_frame, height=1, width=60)
-cp_ui_text.pack(side=tk.LEFT, padx=5, pady=0)
+cp_ui_text.pack(side=tk.LEFT, pady=0, padx=20)
 cp_ui_button = tk.Button(cp_ui_frame, text="Set Mode", command=cp_submit)
-cp_ui_button.pack(side=tk.LEFT, padx=5, pady=0)
+cp_ui_button.pack(side=tk.RIGHT)
 
 
 
