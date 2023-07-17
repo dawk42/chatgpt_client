@@ -84,11 +84,12 @@ def on_button_click():
 # Create the main window
 
 window = tk.Tk()
-window.title("ChatGPT 3.5 Turbo")
+window.title("OpenAI Chat Client")
+#window.geometry("680x924")
 
 notebook = ttk.Notebook(window)
 tab1 = ttk.Frame(notebook)
-notebook.add(tab1, text="Chat")
+notebook.add(tab1, text=" Chat ")
 
 
 input_frame = ttk.Frame(tab1)
@@ -103,7 +104,7 @@ button.pack(side=tk.TOP, padx=5)
 
 # Create a Text widget for displaying conversation
 display_frame = ttk.Frame(tab1)
-display_frame.pack(side=tk.LEFT, anchor="ne", pady=5, padx=5)
+
 
 def scroll_to_bottom():
     display_text.yview_moveto(1.0)
@@ -111,11 +112,11 @@ def scroll_to_bottom():
 scrollbar = tk.Scrollbar(display_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-display_text = tk.Text(display_frame, height=50, width=80, yscrollcommand=scrollbar.set)
+display_text = tk.Text(display_frame, height=45, width=80, yscrollcommand=scrollbar.set)
 scrollbar.config(command=display_text.yview)
-
-# Position the Text widget and Scrollbar widget
 display_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+#display_text.bind('<Configure>', on_resize)
+display_frame.pack(side=tk.LEFT, anchor="ne", fill=tk.BOTH, expand=True,pady=5, padx=5)
 
 tab2 = ttk.Frame(notebook)
 notebook.add(tab2, text="Settings")
@@ -164,12 +165,9 @@ def update_key():
 ak_frame = ttk.Frame(tab2)
 ak_label = ttk.Label(ak_frame, text="API Key")
 ak_label.pack(side=tk.LEFT)
-ak_text = tk.Text(ak_frame, height=1, width=60)
+ak_text = tk.Text(ak_frame, height=1, width=54)
 ak_text.insert(tk.END, akey)
-ak_text.pack(side=tk.LEFT, padx=20, pady=5)
-
-open_prompt_button = tk.Button(ak_frame, text="Change API Key", command=show_api_key_prompt)
-open_prompt_button.pack(side=tk.LEFT, padx=5)
+ak_text.pack(side=tk.LEFT, padx=20, pady=10)
 
 #Statusbar Sections
 status_frame = tk.Frame(window, bd=1, relief=tk.SUNKEN)
@@ -204,6 +202,8 @@ model_dd = ttk.Combobox(model_dd_frame, textvariable=model_id)
 model_dd['values'] = ("ChatGPT 3.5 Turbo", "ChatGPT 4.0")
 model_dd.bind("<<ComboboxSelected>>", model_select)
 model_dd.pack(side=tk.LEFT, padx=20, pady=5)
+open_prompt_button = tk.Button(ak_frame, text="Change API Key", command=show_api_key_prompt)
+open_prompt_button.pack(side=tk.LEFT, padx=5)
 
 #Pre-Defined conversation Prompts
 def cp_select(event):
@@ -220,6 +220,12 @@ def cp_select(event):
         conversation_prompt = "Translate into a brief corporate communication"
         conversation = [{"role": "system", "content": conversation_prompt}]
 
+#User input converstion prompt
+def cp_submit():
+    global conversation
+    cp_input = cp_ui_text.get("1.0", tk.END).strip()
+    conversation = [{"role": "system", "content": cp_input}]
+
 cp_dd_frame = ttk.Frame(tab2)
 cp_dd_label = ttk.Label(cp_dd_frame, text="Select  Mode")
 cp_dd_label.pack(side=tk.LEFT)
@@ -229,21 +235,15 @@ prompt_dd['values'] = ("Cybersecurity", "Author", "Communicator")
 prompt_dd.bind("<<ComboboxSelected>>", cp_select)
 prompt_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
-#User input converstion prompt
-def cp_submit():
-    global conversation
-    cp_input = cp_ui_text.get("1.0", tk.END).strip()
-    conversation = [{"role": "system", "content": cp_input}]
 
 cp_ui_frame = ttk.Frame(tab2)
 cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
 cp_ui_label.pack(side=tk.LEFT, pady=10)
-cp_ui_text = tk.Text(cp_ui_frame, height=1, width=60)
+cp_ui_text = tk.Text(cp_ui_frame, height=3, width=50)
 cp_ui_text.pack(side=tk.LEFT, pady=0, padx=20)
-cp_ui_button = tk.Button(cp_ui_frame, text="Set Mode", command=cp_submit)
-cp_ui_button.pack(side=tk.RIGHT)
-
-
+cp_bt_frame = ttk.Frame(tab2)
+cp_ui_button = tk.Button(cp_ui_frame, text="Submit", command=cp_submit)
+cp_ui_button.pack(side=tk.BOTTOM)
 
 #Statusbar functions
 def get_api_key(api_key):
@@ -270,9 +270,10 @@ def check_env_var(key_var):
 check_env_var("OPENAI_API_KEY")
 
 ak_frame.pack(anchor="nw")
-model_dd_frame.pack(anchor="nw")
-cp_dd_frame.pack(anchor="nw")
 cp_ui_frame.pack(anchor="nw")
+#cp_bt_frame.pack(anchor="ne")
+cp_dd_frame.pack(anchor="nw")
+model_dd_frame.pack(anchor="nw")
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
 
