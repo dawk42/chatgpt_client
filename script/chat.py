@@ -1,7 +1,7 @@
 import sys
 import importlib
 import subprocess
-import pkg_resources
+import playsound
 import time
 import os
 
@@ -21,6 +21,9 @@ import tkinter as tk
 from tkinter import ttk
 import openai
 from typing import List
+from gtts import gTTS
+from playsound import playsound
+
 global akey
 global mtvar
 global tempvar
@@ -28,6 +31,12 @@ mtvar=384
 akey="null"
 tempvar=.7
 model_id = "gpt-3.5-turbo"
+
+def playback_translation():
+    myobj = gTTS(text=ai_response, lang=language, slow=False)
+    myobj.save("welcome.mp3")
+    playsound('welcome.mp3')
+    os.remove('welcome.mp3')
 
 def update_mt_status():
     global mtvar
@@ -59,7 +68,8 @@ def show_api_key_prompt():
 conversation_prompt = "You are a brilliant assistant who is an expert in cybersecurity."
 conversation = [{"role": "system", "content": conversation_prompt}]
 
-def on_button_click(): 
+def on_button_click():
+    global ai_response
     user_input = input_text.get("1.0", tk.END).strip()  # Retrieve the user input from the Text widget
     if user_input != "":
         conversation.append({"role": "user", "content": user_input})
@@ -81,6 +91,29 @@ def on_button_click():
         time.sleep(1)
         input_text.delete("1.0", tk.END)  # Clear the user input Text widget
         scroll_to_bottom()
+
+def a_select(event):
+    global language
+    accent_opt = accent_dd.get()
+    if accent_opt == "English":
+        language = "en"
+    elif accent_opt == "Spanish":
+        language = "es"
+    elif accent_opt == "French":
+        language = "fr"
+    elif accent_opt == "German":
+        language = "de"
+    elif accent_opt == "Korean":
+        language = "ko"
+    elif accent_opt == "Japanese":
+        language = "ja"
+    elif accent_opt == "Filipino":
+        language = "tl"
+    elif accent_opt == "Russian":
+        language = "ru"
+    elif accent_opt == "Chinese":
+        language = "zh-TW"    
+
 # Create the main window
 
 window = tk.Tk()
@@ -98,9 +131,22 @@ input_frame.pack(side=tk.TOP, anchor="nw", pady=5)
 input_text = tk.Text(input_frame, height=5, width=65)
 input_text.pack(side=tk.LEFT, padx=5, pady=0)
 
+language="en"
+accent_dd_fr = ttk.Frame(tab1)
+accent_dd_lb = ttk.Label(accent_dd_fr, text="Playback Accent")
+accent_dd_lb.pack(side=tk.LEFT)
+accent_var=tk.StringVar(accent_dd_fr)
+accent_dd = ttk.Combobox(accent_dd_fr, textvariable=language)
+accent_dd['values'] = ("English","Spanish","French","German","Korean","Japanese","Filipino","Russian","Chinese")
+accent_dd.bind("<<ComboboxSelected>>", a_select)
+accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
+
 # Create a button
 button = ttk.Button(input_frame, text="Send", command=on_button_click)
 button.pack(side=tk.TOP, padx=5)
+trans = ttk.Button(input_frame, text="Play", command=playback_translation)
+trans.pack(side=tk.BOTTOM, padx=5)
+accent_dd_fr.pack(side=tk.BOTTOM)
 
 # Create a Text widget for displaying conversation
 display_frame = ttk.Frame(tab1)
@@ -236,6 +282,7 @@ prompt_dd.bind("<<ComboboxSelected>>", cp_select)
 prompt_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
 
+
 cp_ui_frame = ttk.Frame(tab2)
 cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
 cp_ui_label.pack(side=tk.LEFT, pady=10)
@@ -276,6 +323,7 @@ cp_dd_frame.pack(anchor="nw")
 model_dd_frame.pack(anchor="nw")
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
+
 
 notebook.pack()
 # Start the GUI event loop
