@@ -1,7 +1,6 @@
 import sys
 import importlib
 import subprocess
-import playsound
 import time
 import os
 
@@ -9,7 +8,7 @@ def install(req_mod):
     python = sys.executable
     subprocess.check_output([python, '-m', 'pip', 'install', req_mod], stderr=subprocess.DEVNULL)
 
-import_array = ['tkinter', 'openai', 'time']
+import_array = ['tkinter', 'openai', 'time', 'playsound', 'gtts']
 for req in import_array:
     try:
         importlib.import_module(req)
@@ -20,6 +19,8 @@ for req in import_array:
 import tkinter as tk
 from tkinter import ttk
 import openai
+import playsound
+import gtts
 from typing import List
 from gtts import gTTS
 from playsound import playsound
