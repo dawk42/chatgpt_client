@@ -158,10 +158,11 @@ accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
 # Send Button
 button = ttk.Button(input_frame, text="Send", command=on_button_click)
 button.pack(side=tk.TOP, padx=5)
-trans = ttk.Button(input_frame, text="Play", command=playback_translation)
-trans.pack(side=tk.BOTTOM, padx=5)
 trans_stop = ttk.Button(input_frame, text="Stop", command=stop_playback)
 trans_stop.pack(side=tk.BOTTOM, padx=5)
+trans = ttk.Button(input_frame, text="Play", command=playback_translation)
+trans.pack(side=tk.BOTTOM, padx=5)
+
 accent_dd_fr.pack(side=tk.BOTTOM)
 
 # Conversation Window
