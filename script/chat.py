@@ -8,7 +8,7 @@ def install(req_mod):
     python = sys.executable
     subprocess.check_output([python, '-m', 'pip', 'install', req_mod], stderr=subprocess.DEVNULL)
 
-import_array = ['tkinter', 'openai', 'time', 'playsound', 'gtts']
+import_array = ['tkinter', 'openai', 'time', 'gtts', 'pygame']
 for req in import_array:
     try:
         importlib.import_module(req)
@@ -19,11 +19,10 @@ for req in import_array:
 import tkinter as tk
 from tkinter import ttk
 import openai
-import playsound
 import gtts
+import pygame
 from typing import List
 from gtts import gTTS
-from playsound import playsound
 
 global akey
 global mtvar
@@ -34,10 +33,24 @@ tempvar=.7
 model_id = "gpt-3.5-turbo"
 
 def playback_translation():
-    myobj = gTTS(text=ai_response, lang=language, slow=False)
+    myobj = gTTS(text=ai_response, lang=language)
     myobj.save("welcome.mp3")
-    playsound('welcome.mp3')
-    os.remove('welcome.mp3')
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load("welcome.mp3")
+    pygame.mixer.music.play()
+    #while pygame.mixer.music.get_busy() and not stop_flag:
+    #    window.update()
+    input_frame.mainloop()
+
+    pygame.mixer.quit()
+    pygame.quit()
+    os.remove("welcome.mp3")
+
+def stop_playback():
+    pygame.mixer.music.stop()
+    pygame.mixer.quit()
+    pygame.quit()
 
 def update_mt_status():
     global mtvar
@@ -147,6 +160,8 @@ button = ttk.Button(input_frame, text="Send", command=on_button_click)
 button.pack(side=tk.TOP, padx=5)
 trans = ttk.Button(input_frame, text="Play", command=playback_translation)
 trans.pack(side=tk.BOTTOM, padx=5)
+trans_stop = ttk.Button(input_frame, text="Stop", command=stop_playback)
+trans_stop.pack(side=tk.BOTTOM, padx=5)
 accent_dd_fr.pack(side=tk.BOTTOM)
 
 # Create a Text widget for displaying conversation
