@@ -8,7 +8,7 @@ def install(req_mod):
     python = sys.executable
     subprocess.check_output([python, '-m', 'pip', 'install', req_mod], stderr=subprocess.DEVNULL)
 
-import_array = ['tkinter', 'openai', 'time', 'playsound', 'gtts']
+import_array = ['tkinter', 'openai', 'time', 'pygame', 'gtts']
 for req in import_array:
     try:
         importlib.import_module(req)
@@ -18,12 +18,12 @@ for req in import_array:
 
 import tkinter as tk
 from tkinter import ttk
-import openai
-import playsound
 import gtts
+import pygame
+import openai
 from typing import List
 from gtts import gTTS
-from playsound import playsound
+
 
 global akey
 global mtvar
@@ -34,10 +34,23 @@ tempvar=.7
 model_id = "gpt-3.5-turbo"
 
 def playback_translation():
-    myobj = gTTS(text=ai_response, lang=language, slow=False)
+    myobj = gTTS(text=ai_response, lang=language)
     myobj.save("welcome.mp3")
-    playsound('welcome.mp3')
-    os.remove('welcome.mp3')
+    pygame.init()
+    pygame.mixer.init()
+    pygame.mixer.music.load("welcome.mp3")
+    pygame.mixer.music.play()
+
+    input_frame.mainloop()
+
+    pygame.mixer.quit()
+    pygame.quit()
+    os.remove("welcome.mp3")
+
+def stop_playback():
+    pygame.mixer.music.stop()
+    pygame.mixer.quit()
+    pygame.quit()
 
 def update_mt_status():
     global mtvar
@@ -116,19 +129,19 @@ def a_select(event):
         language = "zh-TW"    
 
 # Create the main window
-
 window = tk.Tk()
 window.title("OpenAI Chat Client")
-#window.geometry("680x924")
 
+# Create Notebook with Tabs
 notebook = ttk.Notebook(window)
+
+# Tab 1
 tab1 = ttk.Frame(notebook)
 notebook.add(tab1, text=" Chat ")
 
-
+# User Input
 input_frame = ttk.Frame(tab1)
 input_frame.pack(side=tk.TOP, anchor="nw", pady=5)
-# Create a Text widget for user input
 input_text = tk.Text(input_frame, height=5, width=65)
 input_text.pack(side=tk.LEFT, padx=5, pady=0)
 
@@ -142,29 +155,28 @@ accent_dd['values'] = ("English","Spanish","French","German","Korean","Japanese"
 accent_dd.bind("<<ComboboxSelected>>", a_select)
 accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
-# Create a button
+# Send Button
 button = ttk.Button(input_frame, text="Send", command=on_button_click)
 button.pack(side=tk.TOP, padx=5)
 trans = ttk.Button(input_frame, text="Play", command=playback_translation)
 trans.pack(side=tk.BOTTOM, padx=5)
+trans_stop = ttk.Button(input_frame, text="Stop", command=stop_playback)
+trans_stop.pack(side=tk.BOTTOM, padx=5)
 accent_dd_fr.pack(side=tk.BOTTOM)
 
-# Create a Text widget for displaying conversation
+# Conversation Window
 display_frame = ttk.Frame(tab1)
-
-
 def scroll_to_bottom():
     display_text.yview_moveto(1.0)
 
 scrollbar = tk.Scrollbar(display_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
 display_text = tk.Text(display_frame, height=45, width=80, yscrollcommand=scrollbar.set)
 scrollbar.config(command=display_text.yview)
 display_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-#display_text.bind('<Configure>', on_resize)
 display_frame.pack(side=tk.LEFT, anchor="ne", fill=tk.BOTH, expand=True,pady=5, padx=5)
 
+#Tab 2
 tab2 = ttk.Frame(notebook)
 notebook.add(tab2, text="Settings")
 
@@ -264,7 +276,7 @@ def cp_select(event):
         conversation_prompt = "You are creative author, with a flare for world creation"
         conversation = [{"role": "system", "content": conversation_prompt}]
     elif selected_option == "Communicator":
-        conversation_prompt = "Translate into a brief corporate communication"
+        conversation_prompt = "Translate into a brief Email"
         conversation = [{"role": "system", "content": conversation_prompt}]
 
 #User input converstion prompt
@@ -282,8 +294,6 @@ prompt_dd['values'] = ("Cybersecurity", "Author", "Communicator")
 prompt_dd.bind("<<ComboboxSelected>>", cp_select)
 prompt_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
-
-
 cp_ui_frame = ttk.Frame(tab2)
 cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
 cp_ui_label.pack(side=tk.LEFT, pady=10)
@@ -299,9 +309,7 @@ def get_api_key(api_key):
     print("API Key stored")
     openai.api_key=api_key
     akey = openai.api_key
-    
-    # You can perform further operations with the API key here
-
+        
 def update_api_status(vartext):
     status_label_api.config(text=vartext)
 
@@ -319,13 +327,11 @@ check_env_var("OPENAI_API_KEY")
 
 ak_frame.pack(anchor="nw")
 cp_ui_frame.pack(anchor="nw")
-#cp_bt_frame.pack(anchor="ne")
 cp_dd_frame.pack(anchor="nw")
 model_dd_frame.pack(anchor="nw")
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
-
-
 notebook.pack()
+
 # Start the GUI event loop
 window.mainloop()
