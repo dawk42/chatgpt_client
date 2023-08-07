@@ -18,6 +18,8 @@ for req in import_array:
 
 import tkinter as tk
 from tkinter import ttk
+import gtts
+import pygame
 import openai
 import gtts
 import pygame
@@ -139,6 +141,7 @@ tab1 = ttk.Frame(notebook)
 notebook.add(tab1, text=" Chat ")
 input_frame = ttk.Frame(tab1)
 input_frame.pack(side=tk.TOP, anchor="nw", pady=5)
+input_text = tk.Text(input_frame, height=5, width=65)
 
 # Create a Text widget for user input
 input_text = tk.Text(input_frame, height=5, width=75)
@@ -170,22 +173,19 @@ trans_stop = ttk.Button(accent_dd_fr, image=stop_icon, command=stop_playback)
 trans_stop.pack(side=tk.RIGHT, padx=5)
 accent_dd_fr.pack(side=tk.BOTTOM)
 
-# Create a Text widget for displaying conversation
+# Conversation Window
 display_frame = ttk.Frame(tab1)
-
-
 def scroll_to_bottom():
     display_text.yview_moveto(1.0)
 
 scrollbar = tk.Scrollbar(display_frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
 display_text = tk.Text(display_frame, height=45, width=80, yscrollcommand=scrollbar.set)
 scrollbar.config(command=display_text.yview)
 display_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-#display_text.bind('<Configure>', on_resize)
 display_frame.pack(side=tk.LEFT, anchor="ne", fill=tk.BOTH, expand=True,pady=5, padx=5)
 
+#Tab 2
 tab2 = ttk.Frame(notebook)
 notebook.add(tab2, text="Settings")
 
@@ -285,7 +285,7 @@ def cp_select(event):
         conversation_prompt = "You are creative author, with a flare for world creation"
         conversation = [{"role": "system", "content": conversation_prompt}]
     elif selected_option == "Communicator":
-        conversation_prompt = "Translate into a brief corporate communication"
+        conversation_prompt = "Translate into a brief Email"
         conversation = [{"role": "system", "content": conversation_prompt}]
 
 #User input converstion prompt
@@ -303,8 +303,6 @@ prompt_dd['values'] = ("Cybersecurity", "Author", "Communicator")
 prompt_dd.bind("<<ComboboxSelected>>", cp_select)
 prompt_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
-
-
 cp_ui_frame = ttk.Frame(tab2)
 cp_ui_label = ttk.Label(cp_ui_frame, text="Custom Mode")
 cp_ui_label.pack(side=tk.LEFT, pady=10)
@@ -320,9 +318,7 @@ def get_api_key(api_key):
     print("API Key stored")
     openai.api_key=api_key
     akey = openai.api_key
-    
-    # You can perform further operations with the API key here
-
+        
 def update_api_status(vartext):
     status_label_api.config(text=vartext)
 
@@ -340,13 +336,11 @@ check_env_var("OPENAI_API_KEY")
 
 ak_frame.pack(anchor="nw")
 cp_ui_frame.pack(anchor="nw")
-#cp_bt_frame.pack(anchor="ne")
 cp_dd_frame.pack(anchor="nw")
 model_dd_frame.pack(anchor="nw")
 ts_frame.pack(anchor="nw")
 mt_frame.pack(anchor="nw")
-
-
 notebook.pack()
+
 # Start the GUI event loop
 window.mainloop()
