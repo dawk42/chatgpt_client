@@ -21,6 +21,7 @@ from tkinter import ttk
 import openai
 import gtts
 import pygame
+from PIL import Image, ImageTk
 from typing import List
 from gtts import gTTS
 
@@ -129,20 +130,18 @@ def a_select(event):
         language = "zh-TW"    
 
 # Create the main window
-
 window = tk.Tk()
 window.title("OpenAI Chat Client")
-#window.geometry("680x924")
-
 notebook = ttk.Notebook(window)
+
+
 tab1 = ttk.Frame(notebook)
 notebook.add(tab1, text=" Chat ")
-
-
 input_frame = ttk.Frame(tab1)
 input_frame.pack(side=tk.TOP, anchor="nw", pady=5)
+
 # Create a Text widget for user input
-input_text = tk.Text(input_frame, height=5, width=65)
+input_text = tk.Text(input_frame, height=5, width=75)
 input_text.pack(side=tk.LEFT, padx=5, pady=0)
 
 language="en"
@@ -155,13 +154,20 @@ accent_dd['values'] = ("English","Spanish","French","German","Korean","Japanese"
 accent_dd.bind("<<ComboboxSelected>>", a_select)
 accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
-# Create a button
-button = ttk.Button(input_frame, text="Send", command=on_button_click)
-button.pack(side=tk.TOP, padx=5)
-trans = ttk.Button(input_frame, text="Play", command=playback_translation)
-trans.pack(side=tk.BOTTOM, padx=5)
-trans_stop = ttk.Button(input_frame, text="Stop", command=stop_playback)
-trans_stop.pack(side=tk.BOTTOM, padx=5)
+# Send, Play, Stop Buttons
+#ICONS
+submit_path = Image.open("../images/submit.png")
+submit_icon = ImageTk.PhotoImage(submit_path)
+play_path = Image.open("../images/play.png")
+play_icon = ImageTk.PhotoImage(play_path)
+stop_path = Image.open("../images/stop.png")
+stop_icon = ImageTk.PhotoImage(stop_path)
+button = ttk.Button(input_frame, image=submit_icon, command=on_button_click)
+button.pack(side=tk.TOP, padx=18, pady=9)
+trans = ttk.Button(accent_dd_fr, image=play_icon, command=playback_translation)
+trans.pack(side=tk.LEFT, padx=5)
+trans_stop = ttk.Button(accent_dd_fr, image=stop_icon, command=stop_playback)
+trans_stop.pack(side=tk.RIGHT, padx=5)
 accent_dd_fr.pack(side=tk.BOTTOM)
 
 # Create a Text widget for displaying conversation
