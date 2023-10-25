@@ -37,6 +37,36 @@ minvar=64
 maxvar=4096
 model_id = "gpt-3.5-turbo"
 
+#def show_context_menu(event):
+#    context_menu.tk_popup(event.x_root, event.y_root)
+
+#def copy_text():
+#    text = text_area.get("sel.first", "sel.last")
+#    if text:
+#        root.clipboard_clear()
+#        root.clipboard_append(text)
+
+#def paste_text():
+#    text = root.clipboard_get()
+#    if text:
+#        text_area.insert(tk.INSERT, text)
+
+#root = tk.Tk()
+
+#text_area = tk.Text(root)
+#text_area.pack()
+
+#context_menu = tk.Menu(root, tearoff=0)
+#context_menu.add_command(label="Copy", command=copy_text)
+#context_menu.add_command(label="Paste", command=paste_text)
+
+#text_area.bind("<Button-3>", show_context_menu)
+
+#root.mainloop()
+
+
+
+
 def playback_translation():
     myobj = gTTS(text=ai_response, lang=language)
     myobj.save("welcome.mp3")
