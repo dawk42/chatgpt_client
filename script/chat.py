@@ -160,11 +160,11 @@ accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
 # Send, Play, Stop Buttons
 #ICONS
-submit_path = Image.open("../images/submit.png")
+submit_path = Image.open("./images/submit.png")
 submit_icon = ImageTk.PhotoImage(submit_path)
-play_path = Image.open("../images/play.png")
+play_path = Image.open("./images/play.png")
 play_icon = ImageTk.PhotoImage(play_path)
-stop_path = Image.open("../images/stop.png")
+stop_path = Image.open("./images/stop.png")
 stop_icon = ImageTk.PhotoImage(stop_path)
 button = ttk.Button(input_frame, image=submit_icon, command=on_button_click)
 button.pack(side=tk.TOP, padx=18, pady=9)
