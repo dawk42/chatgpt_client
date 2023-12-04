@@ -38,6 +38,36 @@ minvar=64
 maxvar=4096
 model_id = "gpt-3.5-turbo"
 
+#def show_context_menu(event):
+#    context_menu.tk_popup(event.x_root, event.y_root)
+
+#def copy_text():
+#    text = text_area.get("sel.first", "sel.last")
+#    if text:
+#        root.clipboard_clear()
+#        root.clipboard_append(text)
+
+#def paste_text():
+#    text = root.clipboard_get()
+#    if text:
+#        text_area.insert(tk.INSERT, text)
+
+#root = tk.Tk()
+
+#text_area = tk.Text(root)
+#text_area.pack()
+
+#context_menu = tk.Menu(root, tearoff=0)
+#context_menu.add_command(label="Copy", command=copy_text)
+#context_menu.add_command(label="Paste", command=paste_text)
+
+#text_area.bind("<Button-3>", show_context_menu)
+
+#root.mainloop()
+
+
+
+
 def playback_translation():
     myobj = gTTS(text=ai_response, lang=language)
     myobj.save("welcome.mp3")
@@ -161,11 +191,11 @@ accent_dd.pack(side=tk.LEFT, padx=20, pady=5)
 
 # Send, Play, Stop Buttons
 #ICONS
-submit_path = Image.open("../images/submit.png")
+submit_path = Image.open("./images/submit.png")
 submit_icon = ImageTk.PhotoImage(submit_path)
-play_path = Image.open("../images/play.png")
+play_path = Image.open("./images/play.png")
 play_icon = ImageTk.PhotoImage(play_path)
-stop_path = Image.open("../images/stop.png")
+stop_path = Image.open("./images/stop.png")
 stop_icon = ImageTk.PhotoImage(stop_path)
 button = ttk.Button(input_frame, image=submit_icon, command=on_button_click)
 button.pack(side=tk.TOP, padx=18, pady=9)
