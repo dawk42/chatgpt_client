@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import importlib
 import subprocess
@@ -264,11 +265,17 @@ def model_select(event):
     global maxvar
     selected_option = model_dd.get()
     if selected_option == "ChatGPT 3.5 4K":
-        model_id = "gpt-3.5-turbo-0613"
+        model_id = "gpt-3.5-turbo-1106"
         maxvar = 4096
     elif selected_option == "ChatGPT 3.5 16K":
-        model_id = "gpt-3.5-turbo-16k-0613"
+        model_id = "gpt-3.5-turbo-1106"
         maxvar = 16384
+    elif selected_option == "ChatGPT 4.0":
+        model_id = "gpt-4"
+        maxvar = 8192
+    elif selected_option == "ChatGPT 4.0 Preview":
+        model_id = "gpt-4-1106-preview"
+        maxvar = 50000
     tokslid.config(to=maxvar)
     mt_frame.update()
 
@@ -277,7 +284,7 @@ model_dd_label = ttk.Label(model_dd_frame, text="Select Model")
 model_dd_label.pack(side=tk.LEFT)
 variable = tk.StringVar(model_dd_frame)
 model_dd = ttk.Combobox(model_dd_frame, textvariable=model_id)
-model_dd['values'] = ("ChatGPT 3.5 4K", "ChatGPT 3.5 16K")
+model_dd['values'] = ("ChatGPT 3.5 4K", "ChatGPT 3.5 16K", "ChatGPT 4.0","ChatGPT 4.0 Preview")
 model_dd.bind("<<ComboboxSelected>>", model_select)
 model_dd.pack(side=tk.LEFT, padx=20, pady=5)
 open_prompt_button = tk.Button(ak_frame, text="Change API Key", command=show_api_key_prompt)
